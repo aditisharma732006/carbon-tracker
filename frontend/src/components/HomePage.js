@@ -9,7 +9,6 @@ const HomePage = () => {
   const [currentResult, setCurrentResult] = useState(null);
   const [loading, setLoading] = useState(false);
   
-  // ✅ ADD: API URL for both development and production
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   // Fetch all activities on component mount
@@ -44,7 +43,6 @@ const HomePage = () => {
   const handleActivitySubmit = async (formData) => {
     setLoading(true);
     try {
-      // ✅ UPDATE: Use API_URL
       const response = await fetch(`${API_URL}/api/activities`, {
         method: 'POST',
         headers: {
@@ -68,7 +66,29 @@ const HomePage = () => {
       setLoading(false);
     }
   };
+const handleDeleteActivity = async (id) => {
+  try {
+   // 1. Send delete request to the backend
+   const res = await fetch(`${API_URL}/api/activities/${id}`, {
+    method: 'DELETE',
+   });
 
+      const data = await res.json(); 
+
+   if (!res.ok || !data.success) {
+    throw new Error(data.msg || 'Failed to delete activity');
+   }
+   
+   // 2. Update the frontend state
+   setActivities(
+    (prevActivities) => prevActivities.filter((activity) => activity._id !== id)
+   );
+
+  } catch (err) {
+   console.error(err);
+      alert(err.message); // Show a useful error
+  }
+ };
   // Load initial data
   useEffect(() => {
     fetchActivities();
@@ -87,6 +107,8 @@ const HomePage = () => {
           <HistoryChart 
             activities={activities}
             loading={loading}
+            onDeleteActivity={handleDeleteActivity} 
+
           />
         </div>
 
