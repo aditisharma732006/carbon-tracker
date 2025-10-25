@@ -304,11 +304,38 @@ const getResultAndTips = async (req, res) => {
   });
  }
 };
+// @desc    Delete an activity
+// @route   DELETE /api/activities/:id
+// @access  Public
+const deleteActivity = async (req, res) => {
+  try {
+    const activity = await Activity.findById(req.params.id);
 
+    if (!activity) {
+      return res.status(404).json({ msg: 'Activity not found' });
+    }
 
+    await activity.deleteOne(); // Use deleteOne() on the document
+
+    // Return a success message and the ID of the deleted item
+    res.status(200).json({ 
+        success: true, 
+        msg: 'Activity removed', 
+        id: req.params.id 
+    });
+
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Activity not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+};
 
 module.exports = {
  createActivity,
  getActivities,
- getResultAndTips
+ getResultAndTips,
+ deleteActivity
 };
