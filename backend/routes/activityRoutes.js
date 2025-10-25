@@ -3,7 +3,8 @@ const router = express.Router();
 const {
  createActivity,
  getActivities,
- getResultAndTips
+ getResultAndTips,
+ deleteActivity
 } = require('../controllers/activityController');
 
 // --- Standard RESTful API routes for the 'activities' collection ---
@@ -21,5 +22,6 @@ router.get('/', getActivities);
 // @desc    Get latest result and eco tips
 router.get('/result', getResultAndTips);
 
+router.delete('/:id', deleteActivity);
 
 module.exports = router;
