@@ -8,11 +8,15 @@ const HomePage = () => {
   const [activities, setActivities] = useState([]);
   const [currentResult, setCurrentResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  
+  // ✅ ADD: API URL for both development and production
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   // Fetch all activities on component mount
   const fetchActivities = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/activities');
+      // ✅ UPDATE: Use API_URL
+      const response = await fetch(`${API_URL}/api/activities`);
       const data = await response.json();
       if (data.success) {
         setActivities(data.data);
@@ -25,7 +29,8 @@ const HomePage = () => {
   // Fetch latest result
   const fetchLatestResult = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/activities/result');
+      // ✅ UPDATE: Use API_URL
+      const response = await fetch(`${API_URL}/api/activities/result`);
       const data = await response.json();
       if (data.success) {
         setCurrentResult(data.data);
@@ -39,7 +44,8 @@ const HomePage = () => {
   const handleActivitySubmit = async (formData) => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/activities', {
+      // ✅ UPDATE: Use API_URL
+      const response = await fetch(`${API_URL}/api/activities`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,8 +77,6 @@ const HomePage = () => {
 
   return (
     <div className="homepage">
-      {/* Removed the header since we have NavBar */}
-      
       <div className="dashboard-container">
         {/* LEFT SIDE */}
         <div className="left-section">
