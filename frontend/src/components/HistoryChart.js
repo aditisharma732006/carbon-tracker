@@ -1,6 +1,6 @@
 import React from 'react';
 
-const HistoryChart = ({ activities, loading }) => {
+const HistoryChart = ({ activities, loading,onDeleteActivity}) => {
   if (loading) {
     return (
       <div className="history-chart">
@@ -33,6 +33,12 @@ const HistoryChart = ({ activities, loading }) => {
               <span className="footprint">{activity.carbonFootprint} kg CO₂</span>
               <span className="transport">{activity.transportType}</span>
             </div>
+            <button
+              className="delete-btn"
+              onClick={() => onDeleteActivity(activity._id)}
+            >
+              &times;
+            </button>
           </div>
         ))}
       </div>

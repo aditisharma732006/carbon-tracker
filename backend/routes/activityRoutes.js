@@ -1,25 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const {
- createActivity,
- getActivities,
- getResultAndTips
+  createActivity,
+  getActivities,
+  getActivityById,
+  updateActivity,
+  getResultAndTips,
+  deleteActivity,
+  getAnalytics,
+  getPersonalizedRecommendations
 } = require('../controllers/activityController');
+const { protect } = require('../middleware/auth');
 
-// --- Standard RESTful API routes for the 'activities' collection ---
-// The full path will be: /api/activities
+// All activity endpoints are private and user-scoped
+router.use(protect);
 
-// @route   POST /api/activities
-// @desc    Create a new activity and get result with tips
-router.post('/', createActivity); 
-
-// @route   GET /api/activities
-// @desc    Get all activities history and statistics
+router.post('/', createActivity);
 router.get('/', getActivities);
-
-// @route   GET /api/activities/result
-// @desc    Get latest result and eco tips
+router.get('/analytics', getAnalytics);
+router.get('/recommendations', getPersonalizedRecommendations);
 router.get('/result', getResultAndTips);
-
+router.get('/:id', getActivityById);
+router.put('/:id', updateActivity);
+router.delete('/:id', deleteActivity);
 
 module.exports = router;

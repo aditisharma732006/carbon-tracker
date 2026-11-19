@@ -8,11 +8,14 @@ const HomePage = () => {
   const [activities, setActivities] = useState([]);
   const [currentResult, setCurrentResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   // Fetch all activities on component mount
   const fetchActivities = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/activities');
+      
+      const response = await fetch(`${API_URL}/api/activities`);
       const data = await response.json();
       if (data.success) {
         setActivities(data.data);
@@ -25,7 +28,8 @@ const HomePage = () => {
   // Fetch latest result
   const fetchLatestResult = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/activities/result');
+    
+      const response = await fetch(`${API_URL}/api/activities/result`);
       const data = await response.json();
       if (data.success) {
         setCurrentResult(data.data);
@@ -39,7 +43,7 @@ const HomePage = () => {
   const handleActivitySubmit = async (formData) => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/activities', {
+      const response = await fetch(`${API_URL}/api/activities`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,17 +66,37 @@ const HomePage = () => {
       setLoading(false);
     }
   };
+const handleDeleteActivity = async (id) => {
+  try {
+   // 1. Send delete request to the backend
+   const res = await fetch(`${API_URL}/api/activities/${id}`, {
+    method: 'DELETE',
+   });
 
+      const data = await res.json(); 
+
+   if (!res.ok || !data.success) {
+    throw new Error(data.msg || 'Failed to delete activity');
+   }
+   
+   // 2. Update the frontend state
+   setActivities(
+    (prevActivities) => prevActivities.filter((activity) => activity._id !== id)
+   );
+
+  } catch (err) {
+   console.error(err);
+      alert(err.message); // Show a useful error
+  }
+ };
   // Load initial data
   useEffect(() => {
     fetchActivities();
     fetchLatestResult();
-  }, []);
+  }, [ ]); 
 
   return (
     <div className="homepage">
-      {/* Removed the header since we have NavBar */}
-      
       <div className="dashboard-container">
         {/* LEFT SIDE */}
         <div className="left-section">
@@ -83,6 +107,8 @@ const HomePage = () => {
           <HistoryChart 
             activities={activities}
             loading={loading}
+            onDeleteActivity={handleDeleteActivity} 
+
           />
         </div>
 
